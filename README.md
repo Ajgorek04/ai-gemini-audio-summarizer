@@ -3,7 +3,7 @@
 > Transform any YouTube video into structured, actionable summaries using Google Gemini AI.  
 > Works with lectures, business meetings, conferences, podcasts, webinars, and more.
 
-[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.x-000000?style=flat-square&logo=flask)](https://flask.palletsprojects.com)
 [![Gemini](https://img.shields.io/badge/Google%20Gemini-3.5%20Flash-4285F4)](https://ai.google.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -34,7 +34,7 @@
 | Layer          | Technology               |
 | -------------- | ------------------------ |
 | Backend        | Python 3, Flask          |
-| AI / NLP       | Google Gemini 2.0 Flash  |
+| AI / NLP       | Google Gemini 3.5 Flash  |
 | Audio Download | yt-dlp + FFmpeg          |
 | Frontend       | HTML5, CSS3, Bootstrap 5 |
 | Notifications  | Discord Webhooks         |
@@ -45,7 +45,7 @@
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - [FFmpeg](https://ffmpeg.org/download.html) installed and available in PATH
 - A [Google Gemini API key](https://aistudio.google.com/app/apikey) (free tier available)
 
