@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Powered Audio Summarizer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-main: #09090b;
+        --bg-panel: #111113;
+        --bg-input: #0f0f11;
+        --border: #27272a;
+        --border-focus: #3b82f6;
+        --text-primary: #fafafa;
+        --text-muted: #71717a;
+        --text-label: #a1a1aa;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --accent-glow: rgba(59, 130, 246, 0.25);
+        --green: #10b981;
+        --green-hover: #059669;
+        --purple: #8b5cf6;
+        --purple-hover: #7c3aed;
+        --radius: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        font-family: "Inter", sans-serif;
+        padding: 32px 16px 64px;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      /* ── HEADER ── */
+      .app-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .app-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--accent), var(--purple));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .logo-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        background: linear-gradient(to right, #fff 30%, #71717a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .app-tagline {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* ── CARD ── */
+      .card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+
+      .card-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        margin-bottom: 18px;
+      }
+
+      /* ── FORM ELEMENTS ── */
+      label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-label);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .form-control,
+      .form-select {
+        background-color: var(--bg-input);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        border-radius: var(--radius);
+        padding: 11px 14px;
+        font-size: 0.9rem;
+        font-family: "Inter", sans-serif;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        width: 100%;
+      }
+
+      .form-control::placeholder {
+        color: #3f3f46;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        outline: none;
+        border-color: var(--border-focus);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+        background-color: var(--bg-input);
+        color: var(--text-primary);
+      }
+
+      .form-select option {
+        background: #18181b;
+      }
+
+      .url-input {
+        font-size: 0.95rem;
+        padding: 13px 16px;
+      }
+
+      textarea.form-control {
+        height: 300px;
+        resize: vertical;
+        font-family: "Inter", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      /* ── BADGES for content type ── */
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+
+      /* ── BUTTONS ── */
+      .btn {
+        padding: 11px 18px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: "Inter", sans-serif;
+      }
+
+      .btn-primary-action {
+        background: var(--accent);
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        width: 100%;
+        padding: 14px;
+      }
+
+      .btn-primary-action:hover:not(:disabled) {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+      }
+
+      .btn-primary-action:disabled {
+        background: #27272a;
+        color: #52525b;
+        box-shadow: none;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-discord-a {
+        background: var(--purple);
+        color: #fff;
+        width: 100%;
+      }
+      .btn-discord-a:hover {
+        background: var(--purple-hover);
+      }
+
+      .btn-discord-b {
+        background: var(--green);
+        color: #fff;
+        width: 100%;
+      }
+      .btn-discord-b:hover {
+        background: var(--green-hover);
+      }
+
+      .btn-copy {
+        background: #27272a;
+        color: var(--text-label);
+        font-size: 0.8rem;
+        padding: 6px 12px;
+      }
+      .btn-copy:hover {
+        background: #3f3f46;
+        color: #fff;
+      }
+
+      /* ── LOADER ── */
+      #loader {
+        display: none;
+      }
+
+      .loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 20px;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loader-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      .loader-steps {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .step-badge {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: #18181b;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+      }
+
+      /* ── OUTPUT HEADER ── */
+      .output-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .output-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      /* ── DIVIDER ── */
+      .section-divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 8px 0 24px;
+      }
+
+      /* ── STATUS MSG ── */
+      #status-msg {
+        display: none;
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 10px;
+        border-radius: var(--radius);
+        margin-bottom: 16px;
+      }
+
+      .status-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .status-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+
+      /* ── MAX WIDTH ── */
+      .app-wrapper {
+        max-width: 940px;
+        margin: 0 auto;
+      }
+
+      /* ── FOOTER ── */
+      .app-footer {
+        text-align: center;
+        margin-top: 40px;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      .app-footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-wrapper">
+      <!-- HEADER -->
+      <div class="app-header">
+        <div class="app-logo">
+          <div class="logo-icon">🎙️</div>
+          <span class="logo-text">Audio Summarizer</span>
+        </div>
+        <p class="app-tagline">
+          AI-powered summarization for lectures, meetings, conferences &amp;
+          more
+        </p>
+      </div>
+
+      <!-- INPUT CARD -->
+      <div class="card">
+        <div class="card-title">📥 Source &amp; Context</div>
+
+        <div class="mb-4">
+          <label>YouTube URL *</label>
+          <input
+            type="url"
+            id="yt_url"
+            class="form-control url-input"
+            placeholder="https://www.youtube.com/watch?v=..."
+          />
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label>Content Type</label>
+            <select id="content_type" class="form-select">
+              <option value="">— Select type —</option>
+              <option value="University Lecture">🎓 University Lecture</option>
+              <option value="Business Meeting">💼 Business Meeting</option>
+              <option value="Conference / Keynote">
+                🎤 Conference / Keynote
+              </option>
+              <option value="Podcast / Interview">
+                🎧 Podcast / Interview
+              </option>
+              <option value="Webinar">💻 Webinar</option>
+              <option value="Live Stream">📡 Live Stream</option>
+              <option value="Workshop">🛠️ Workshop</option>
+              <option value="Other">📄 Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label>Speaker / Presenter</label>
+            <input
+              type="text"
+              id="speaker"
+              class="form-control"
+              placeholder="Name (optional)"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Event / Topic Name</label>
+            <input
+              type="text"
+              id="event_name"
+              class="form-control"
+              placeholder="e.g. Q3 All-Hands (optional)"
+            />
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label>Date &amp; Time</label>
+            <input
+              type="text"
+              id="date"
+              class="form-control"
+              placeholder="DD.MM.YYYY, HH:MM (optional)"
+            />
+          </div>
+          <div class="col-md-8">
+            <label>Additional Instructions</label>
+            <input
+              type="text"
+              id="extra"
+              class="form-control"
+              placeholder="e.g. Focus on action items, summarize in bullet points, etc."
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYZE BUTTON -->
+      <button
+        onclick="processVideo()"
+        class="btn btn-primary-action mb-4"
+        id="generateBtn"
+      >
+        ⚡ Analyze Recording
+      </button>
+
+      <!-- STATUS MESSAGE -->
+      <div id="status-msg"></div>
+
+      <!-- LOADER -->
+      <div id="loader" class="card mb-4">
+        <div class="loader-inner">
+          <div class="spinner"></div>
+          <div class="loader-text">
+            <strong>Analyzing your recording…</strong><br />
+            This may take a few minutes depending on the length.
+          </div>
+          <div class="loader-steps">
+            <span class="step-badge">1. Download audio</span>
+            <span class="step-badge">2. Upload to Gemini</span>
+            <span class="step-badge">3. AI analysis</span>
+            <span class="step-badge">4. Generate summary</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS CARD -->
+      <div class="card">
+        <div class="card-title">📤 Generated Summaries</div>
+        <hr class="section-divider" />
+
+        <div class="row g-4">
+          <!-- QUICK SUMMARY -->
+          <div class="col-md-6">
+            <div class="output-header">
+              <div class="output-label">
+                <div class="dot" style="background: #8b5cf6"></div>
+                Quick Summary
+              </div>
+              <button class="btn btn-copy" onclick="copyText('result_a')">
+                Copy
+              </button>
+            </div>
+            <textarea
+              id="result_a"
+              class="form-control mb-3"
+              placeholder="Quick summary will appear here…"
+            ></textarea>
+            <button
+              onclick="sendToDiscord('channel_a')"
+              class="btn btn-discord-a"
+            >
+              📨 Send to Channel A
+            </button>
+          </div>
+
+          <!-- DETAILED NOTES -->
+          <div class="col-md-6">
+            <div class="output-header">
+              <div class="output-label">
+                <div class="dot" style="background: #10b981"></div>
+                Detailed Notes
+              </div>
+              <button class="btn btn-copy" onclick="copyText('result_b')">
+                Copy
+              </button>
+            </div>
+            <textarea
+              id="result_b"
+              class="form-control mb-3"
+              placeholder="Detailed notes will appear here…"
+            ></textarea>
+            <button
+              onclick="sendToDiscord('channel_b')"
+              class="btn btn-discord-b"
+            >
+              📨 Send to Channel B
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="app-footer">
+        Powered by
+        <a href="https://ai.google.dev" target="_blank">Google Gemini</a> &amp;
+        <a href="https://github.com/yt-dlp/yt-dlp" target="_blank">yt-dlp</a>
+      </div>
+    </div>
+
+    <script>
+      // Clear all fields on every page load — prevents browser from restoring previous values
+      window.addEventListener("load", () => {
+        [
+          "yt_url",
+          "speaker",
+          "event_name",
+          "date",
+          "extra",
+          "result_a",
+          "result_b",
+        ].forEach((id) => {
+          document.getElementById(id).value = "";
+        });
+        document.getElementById("content_type").selectedIndex = 0;
+      });
+
+      function showStatus(message, type) {
+        const el = document.getElementById("status-msg");
+        el.textContent = message;
+        el.className = type === "success" ? "status-success" : "status-error";
+        el.style.display = "block";
+        setTimeout(() => {
+          el.style.display = "none";
+        }, 5000);
+      }
+
+      function copyText(id) {
+        const text = document.getElementById(id).value;
+        if (!text) return;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => showStatus("Copied to clipboard!", "success"));
+      }
+
+      async function processVideo() {
+        const url = document.getElementById("yt_url").value.trim();
+        if (!url) {
+          showStatus("Please enter a valid YouTube URL.", "error");
+          return;
+        }
+
+        const btn = document.getElementById("generateBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳ Processing…";
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("result_a").value = "";
+        document.getElementById("result_b").value = "";
+        document.getElementById("status-msg").style.display = "none";
+
+        const payload = {
+          url,
+          content_type: document.getElementById("content_type").value,
+          speaker: document.getElementById("speaker").value,
+          event_name: document.getElementById("event_name").value,
+          date: document.getElementById("date").value,
+          extra: document.getElementById("extra").value,
+        };
+
+        try {
+          const res = await fetch("/process", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+
+          if (data.error) {
+            showStatus("Error: " + data.error, "error");
+          } else {
+            const parts = data.result.split("===SEPARATOR===");
+            if (parts.length >= 2) {
+              document.getElementById("result_a").value = parts[0].trim();
+              document.getElementById("result_b").value = parts[1].trim();
+              showStatus(
+                "Analysis complete! Review the summaries below.",
+                "success",
+              );
+            } else {
+              document.getElementById("result_a").value = data.result;
+              showStatus(
+                "Note: AI did not use the separator. Full output is in the first panel.",
+                "error",
+              );
+            }
+          }
+        } catch (err) {
+          showStatus("Connection error. Check the server console.", "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "⚡ Analyze Recording";
+          document.getElementById("loader").style.display = "none";
+        }
+      }
+
+      async function sendToDiscord(channel) {
+        const id = channel === "channel_a" ? "result_a" : "result_b";
+        const text = document.getElementById(id).value;
+        if (!text) {
+          showStatus("Nothing to send — generate a summary first.", "error");
+          return;
+        }
+
+        try {
+          const res = await fetch("/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, channel }),
+          });
+          const data = await res.json();
+          if (data.error) showStatus("Discord error: " + data.error, "error");
+          else showStatus("Message sent to Discord successfully!", "success");
+        } catch (err) {
+          showStatus("Connection error while sending message.", "error");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+# ── SECRETS ── (never commit these!)
+secrets.py
+.env
+*.env
+
+# ── TEMP AUDIO FILES ──
+*.mp3
+*.mp4
+*.wav
+*.m4a
+temp_audio*
+
+# ── PYTHON ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── VIRTUAL ENVIRONMENTS ──
+venv/
+.venv/
+env/
+ENV/
+
+# ── IDEs ──
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# ── LOGS ──
+*.log
